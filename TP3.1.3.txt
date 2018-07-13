@@ -1,0 +1,252 @@
+8:39 2017/8/11 THink 3.1.3笔记
+   	 注意：
+	dump('变量',1,'<pre>',0);
+	windows中index.php文件中需要定义RUNTIME_PATH 路径 ./Index/
+	配置文件可以分为前后端和总的	
+自动加载：	
+	建立Common文件夹，里边可以定义函数声明 
+	Common.php文件中的函数自动加载，在可以控制器中使用	
+	其他命名的.php文件，需要在配置文件中 'LOAD_EXT_FILE'=>'文件名'
+
+URL传参 
+	U('Index/index',array('uid'=>1,'username=>'admin''),'伪静态后缀名'，1（跳转）,true(域名显示))   Index/index.php/uid/1/username/admin
+	'URL_MODEL'=>2  隐藏index.php文件  0连接符为&  1为 ‘/’    （在配置文件中配置）
+	html模版中 a标签条连接  <a href="{:U('')}"> 表单也可以用	
+	模版中的函数使用{：}
+	
+	I(uid)   相当于$_GET(uid)    
+	I函数有问题，没有实体化 (js脚本会执行)     I('username','','htmlspecialchars');	
+	DEFAULT_FILTER‘=>'htmlspecialchars' 默认实体化
+	IS_POST 是否是post提交     _404（'页面不存在'，U('index') 错误提示
+一个主文件（包含前后台）
+	主配置文件加'APP_GROUP_LIST' =>'Index,Admin'
+		'DEFAULT_GROUP'=>'Index'
+	Common文件下公用的common.php   Index和Admin文件夹里的叫 function.php
+	其他分前后台   一个文件夹里包含Index和Admin文件夹里边对应
+	tpl模版存放在tpl/Index/Index/   
+	减少目录可以在配置文件中 TMPL_FILE_DEPR =>'_'  _是文件名的连接符 也可以是 .-  
+	之后将模版文件名改为Index_index.html
+F函数 
+	F('phiz',$phiz,./Date/) 写   将$phiz写入到phiz.php文件里  保存在根目录下的Date文件夹下
+	$phiz = F('phiz','',./Date/)    读    将phiz.php文件内容读出来  赋值给$phiz
+
+ajax异步
+	$.post(url,{username：username.val(),content:content.val()},function(date){
+		//这里是回调函数
+		if(date.status){
+		}			
+	},'json')  
+	返回用$this->ajaxReturn($date,'json')  以json格式返回数组
+	$('#main').append($str); 将#main内容用$str替换
+自动验证 
+	 _initialize(){} 放在CommonAction.clas.php  其他控制器继承它
+清除session  
+	session_unset()；  session_destory() 两个函数一起使用
+session自定义
+	存数库 SessionDb.class.php  在ThinkPHP/Extend/Session/目录下
+	也可以添加其他自定义的处理方法 使用方法仿照SessionDb类 
+	类里要包括函数  open   close   read  write  destory  gc（垃圾处理）
+	
+	SESSION_TYPE=>'db' 在配置文件中   创建对应数据表
+	 CREATE TABLE think_session (     //表前缀可以换
+     	 	session_id varchar(255) NOT NULL,
+     		 session_expire int(11) NOT NULL,
+     	 	session_data blob,
+    	 	UNIQUE KEY `session_id` (`session_id`)
+   	  );
+	Redis处理	
+		在配置文件中  SESSION_TYPE=>‘Redis’，
+			      SESSION_PREFIX=>'sess_', //表前缀 
+			      REDIS_HOST=>'127.0.0.1' ,REDIS_PORT=>'6379'  //连接redis
+		
+	
+分页类   
+	
+	  $this->firstRow   数组起始0    $this->listRows   显示数量
+
+独立分组 
+	在配置文件中
+	APP_GROUP_MODE‘=>0   旧版本的分组     为 1 时    变成独立分组   
+	APP_GROUP_PATH’=>Modules （名字可以改，默认Modules）独立分组文件夹名称   
+		在项目目录下新建Modules文件夹，文件夹里新建Admin和Home文件夹文件 在Home和admin里包含其他文件夹action conf  model等没有lib
+
+RBAC权限控制
+	配置文件	'RBAC_SUPERADMIN' =>'Admin',	//超级管理员名称
+		'ADMIN_AUTH_KEY' =>'superadmin',  //超级管理员识别
+		'USER_AUTH_ON'   =>true,		//是否开启验证
+		'USER_AUTH_TYPE' =>1, 			//验证类型(1:登录验证（更改权限后，再次登录生效） 2:(及时验证))
+		'USER_AUTH_KEY'  =>'uid',		//用户认证的识别号
+		'NOT_AUTH_MODULE' =>'',			//无需验证的控制器
+		'NOT_AUTH_ACTION' =>'',			//无需验证的动作方法
+		'RBAC_ROLE_TABLE' =>'think_role',	//角色表名
+		'RBAC_USER_TABLE' =>'think_role_user',	//角色和用户的中间表名
+		'RBAC_ACCESS_TABLE' =>'think_access',   //权限表
+		'RBAC_NODE_TABLE'  =>'think_node',	//节点表名
+
+	LoginAtion中  	//存储session信息
+			session(C('USER_AUTH_KEY'),$user["id"]);
+				
+			//读取用户权限
+			Import('ORG.Util.RBAC');
+			RBAC::saveAccessList();
+  	CommonAction 
+		$notAuth = in_array(MODULE_NAME,explode(',', C('NOT_AUTH_MODULE'))) 
+				||   in_array(ACTION_NAME, explode(',', C('NOT_AUTH_ACTION')));
+		
+			//检查是否开启验证
+			if (C('USER_AUTH_ON') && !$notAuth )   {
+				import('ORG.Util.RBAC');
+				RBAC::AccessDecision(GROUP_NANE) || $this->error('没有权限');     //没有分组不用填参数，调用分组得填入分组名
+			}   
+
+引入自己的类文件（验证码）
+	import('ORG.Util.Image');	1.可以直接替换框架里的
+	import('@.Class.Image'); 	2.引入当前分组下的Class文件夹
+	import('Class.Image',APP_PATH); 2.项目目录下的Class文件夹里
+
+无限极分类
+	myblog项目中cate有关的文件  主要是class类里的Category.class.php文件
+
+模版划分
+	前端页面重复的可以划分，分开引入     <include file="Common:header">    Common文件夹下header.html文件
+	
+	共有的页面的php在共有页面里写
+
+扩展标签库
+ 	新建 TagLib文件夹   和Action文件夹同级     该文件夹下写类文件 TabLibmytags.class.php   命名规则  TabLib+自己起的名字  
+	类文件要引入TabLib类 import(TagLib)  然后继承TabLib类   （见myblog/modules/Index/TagLib/）
+	
+路由规则
+	独立分组配置到外层的conf下
+
+Widget工具 
+	
+	不用自定义标签，不在前台模版写php查询语句
+ 	和Action同级文件夹Widget  工具名为 自己起 后台+Widget.class.php 
+	Class HotWidget extends Widget{ 
+
+		Public function render($data){  //需要建立Hot.html模版文件
+			$field = array('id','content','click');
+			$data['blog'] = M("blog")->field($field)->order('click DESC')->limit(5)->select();
+			return $this->renderFile('',$data);
+		}
+	}
+	同级目录建模版文件夹 和类起的名一致，文件夹中包含同名的html文件  （这里的模版连接符没有设置，设置的话和前边的一样）
+	
+  S函数，缓存数据（很重要的）
+	让一些重复的数据查询压到缓存里，需要时之直接调用，不再重复查询，减轻数据库的压力。
+	S('name','$数据变量 ,缓存有效时间)
+  视图模型
+	//中每一条都有自己的分类，要用视图模型，   一个分类下面很多条的话，用关联模型
+
+
+	
+  Uditer 百度编辑器 
+
+	调用编辑器
+		<script type="text/javascript">
+		window.UEDITOR_HOME_URL = '__ROOT__/Data/Ueditor/';
+		window.onload = function() {
+			window.UEDITOR_CONFIG.initialFrameWidth = 1354;
+			window.UEDITOR_CONFIG.initialFrameHeight = 600;
+			UE.Editor.prototype._bkGetActionUrl = UE.Editor.prototype.getActionUrl;
+            UE.Editor.prototype.getActionUrl = function(action) {
+                if (action == 'uploadimage') {    //上传图片
+                      return "<{:U(GROUP_NAME.'/Blog/upload')}>";
+                } else  if(action == 'config') {    //加载配置
+                        return this._bkGetActionUrl.call(this, action);
+                }
+            } 
+			UE.getEditor('content');
+		}
+     调用自己写的上传法
+
+	Public function upload(){			 
+			//方法一  直接修改调用 的类文件
+			//方法二 
+			// 	$config = array(
+			// 		 'aotoSub'=>true,
+			// 		);
+			// $upload = new UploadFile($config);
+			import('ORG.Net.UploadFile');
+			$upload = new UploadFile();
+			$upload->autoSub =true;
+			$upload->subType ='date';
+			$upload->dateFormat = 'Ym';
+			if( $upload->upload('./Uploads/') ){
+				$info =$upload ->getUploadFileInfo();
+				//给图片加水印(框架写好的类)
+				// import('ORG.Util.Image');
+				// Image::water('./Uploads/' . $info[0]['savename'], './Data/water.png');
+				//调用自己的类
+				import('Class.Image', APP_PATH);
+				Image::water('./Uploads/' . $info[0]['savename']);
+				// p($info);
+				echo json_encode(array(
+		 		"state" => 'SUCCESS',
+			    "url" => 'http://'.$_SERVER['SERVER_NAME'].__ROOT__.$info['0']['savepath'].$info['0']['savename'],   //路径要写对才可以显示图片
+			    "title" => htmlspecialchars($_POST['pictitle'],ENT_QUOTES),
+			    "original" =>$info[0]['name'],
+			    "type" => $info[0]['type'],
+			    "size" => $info[0]['size']
+					));
+			}else{
+				echo json_encode(array(
+					'state' =>$upload->getErrorMsg(),
+					));
+			}	
+		}
+
+    配置代码显示格式
+	引入    <link rel="stylesheet" href="__ROOT__/Data/Ueditor/third-party/SyntaxHighlighter/shCoreDefault.css">
+		<script src="__ROOT__/Data/Ueditor/third-party/SyntaxHighlighter/shCore.js"></script>
+		<script>
+   			SyntaxHighlighter.all();
+		</script>
+
+  setInc（）函数实现浏览量
+	setInc（'click'）  默认+1   setInc('click',3)   +3     setDec（）  减
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

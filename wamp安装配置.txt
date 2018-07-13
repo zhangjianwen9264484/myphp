@@ -1,0 +1,6 @@
+配置虚拟主机:
+	在apache/apache2.2.21/conf/httpd.conf中找vhost    将#Include conf/extra/httpd-vhosts.conf前面的#去掉 ;
+	在apache/apache2.2.21/conf/extra/httpd-vhosts.conf 中配置php文件所在路径和服务器名;
+	在c:windows/system32/drivers/etc/hosts  中 将域名指向服务器
+	在php/php5.3/ 将php.ini-development复制一份,将名字改为php.ini 打开后更改路径 如将extension_dir = "ext"改为extension_dir = "D:/wamp/bin/php/php5.3.10/ext/"    
+	

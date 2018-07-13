@@ -1,0 +1,162 @@
+  js的一点知识
+      window.open('./gaunggao.html','content','width=,height=,left=,top=')  //新窗口打开连接
+      广告的关闭：display属性的none和block切换
+      表单的form的  onsubmit属性  表单提交时执行的函数  return 函数() 才可以
+      select下拉列表   onchange=""
+      indexOf("@")    查找字符@  找不到返回-1
+
+      获得焦点事件    onfacus=""
+      失去焦点事件    onblur=""
+
+jquery
+            css({background:"blue"})
+            html() = innerHTML()
+      选择器
+
+      id选择器
+            $("#div")    //找id为div的
+      元素选择器
+            $("input")   //找input标签
+      类选择器
+            $(".leiming")    //找class='leiming'的元素
+      基本选择器
+          $("div,a,p")
+          $("li:first")   //第一个子元素节点
+          $("li:lasr")   //最后一个子元素节点
+          $("li:even")   //偶数元素节点
+          $("li:odd")   //奇数元素节点
+          $("li:eq(2)")   //下标等于2 的元素节点
+               :gt        //大于
+               :lt        //小于
+               :not()      //不选择
+          $(":header")    //标题 h1 h2
+      属性选择器
+          [attribute]     属性选择
+          $("img[src]")
+          $("img[src='a.jpg']")    //找到src='a.jpg'的元素
+          $("div[id!='a']")         //找到id不等于a的div
+                   ^=value          //找以value开头的
+                   $=value          //结尾的属性
+                   *=value          //包含value的
+
+      子元素选择器：伪类选择器
+        type           和  childe阵营
+        :first-of-type 和  :first-child         //第一个子元素
+        :last-of-type  和  :last-child         //最后一个子元素
+        :nth-of-type(1)  和  :nth-child()         //第几个子元素
+        :nth-last-of-type  和  :nth-last-child         //倒数第几个子元素
+
+      层级选择器
+          $("div a")    //找div下所有的a标签
+          $("div>a")   //获取div下的子元素
+          $("div+")   //获取div的兄弟元素，下一个 相当于next
+          $("div~")   //获取div的兄弟元素，下所有个 siblings同辈所有元素
+      内容选择器
+          $("div:contains('text')")    //获取div里内容是text
+                :empty                //匹配内容为空的
+                :has(p)             //匹配div里含有p标签的
+                :parent             //父级元素
+******
+      属性和方法的操作
+        添加
+          .attr("")               //获取属性
+          .attr("属性","value")   //设置属性
+          .attr({"属性":"value","key","value"})   //设置多个属性
+          .attr("属性",function(){return  "aa"})   //通过fn函数返回值设置属性
+        删除
+          removeAttr("属性名")
+    css类操作
+        addClass()      //添加(追加，原来的类存在)
+        removeClass()   //删除
+        toggleClass()   //切换(没有就添加，有的换就删除)
+    html操作
+        html() ===innerHTML()         //为空获取对象内的html代码
+        html("<p>aaa</p>")            //替换里边的html代码，识别标签
+
+        text()===innerText            //获取元素里的文本内容
+        text("aa")                    //设置，替换文本内容，不识别标签
+
+        val()                         //获取值
+        val("aa")                     //设置值
+
+    对象访问
+        length            //数量,不是函数，没有括号
+        size()            //数量，是函数
+
+       each遍历
+        元素.each(function(index,Element){
+            $(this).          //this是当前
+        })        //用法
+        index:索引下标，从0开始
+        Element:元素
+   DOM:文档处理：
+        内部插入：一定是父子级关系
+              $("div").append($("<p>aa</p>"))    //在div里面的内容后边追加<p>aa</p>
+              $("<p>aa</p>").appendTo($("div"))    //在div里面的内容后边追加<p>aa</p>
+              $("div").prepend($("<p>aa</p>"))    //在div里面的内容前边追加<p>aa</p>
+              $("<p>aa</p>").prependTo($("div"))    //在div里面的内容前边追加<p>aa</p>
+        外部插入：兄弟级插入
+              $(a).after($b)               //同级插入，a放到b的后边
+              $(b).insertAfter($(a))       //同级插入，a放到b的后边
+              $(a).before($b)               //同级插入，a放到b的前边
+              $(b).insertBefore($(a))       //同级插入，a放到b的前边
+        包裹
+              $(a).wrap($b)      //用b把a包裹起来，每个都被单独包裹
+                  .unWrap()      //不包裹
+                  .wrapAll       //把所有的包裹到一起
+                  .wrapInner()   //把对象里的内容包裹起来，包括标签
+        替换
+              $(a).replaceWith($b)       //把a对象里边的内容用b替换
+              $(b).repalceAll($a)          //b替换所有的a
+        删除
+            empty()     //删除的是内容
+            remove()      //删除的是整个标签加标签里的内容
+        复制/克隆
+            clone()   //复制一份，；两份一模一样
+       事件切换
+            hover(in,out)    //可以对应两个函数，一个鼠标放上去执行的函数，一个离开时执行的函数
+            hover(function(){},function(){})
+        事件
+            click(function(){})           //点击
+            dbclick(function(){})         //双击
+            focus(function(){})           //获得焦点
+            blur(function(){})            //失去焦点
+            change()                      //select表单发生改变
+            mouseover(function(){})       //鼠标放上去
+            mouseout(function(){})        //鼠标离开
+            mousedown(function(){})       //鼠标按下
+            mouseup(function(){})         //鼠标抬起
+            mousemove(function(){})       //鼠标移动
+            获取坐标
+            $(div).mousemove(function(event){
+              var x = event.clientX;
+              var y = event.clientY;
+            })
+            js中带on的函数，jq中都把on去掉
+
+      事件处理，绑定事件
+            bind("action",fn)     //绑定事件 bind("click",function(){})
+            bind({"action1":fn,"action2:fn"})  //绑定多个事件
+            unbind()             //解除绑定,为空接触所有绑定,有参数解除对应的函数
+
+            on("action",fn)      //绑定
+            off()               //解绑
+
+            one()               //绑定事件，只会执行一次
+      查找
+          $(select).parent()         //查找父元素
+                   .find()           //在对象里面查找
+      动画
+        显示/隐藏
+              show(300,,function(){})       //显示 可以带时间和回调函数
+              hide()       //隐藏
+              toggle()     //切换(显示/隐藏)
+        滑动
+              slideDown()         //下滑    和上边一样
+              slideUp()           //收起
+              slidetoggle()       //切换(下滑/收起)
+        淡入淡出
+              fadeIn()            //淡入
+              fadeOut()           //淡出
+              fadetoggle()        //切换(淡入/淡出)
+              fadeTo(3000,0.2,function(){})            //到某一时刻，中间为目标时间，范围0-1

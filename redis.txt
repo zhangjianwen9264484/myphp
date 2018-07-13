@@ -1,0 +1,151 @@
+redis  被称为 结构化的nosql数据库
+	一，简介
+		网站：http://redis.io
+		国内社区：http://wwww.redis.cn
+			memcache 类型单一，只能缓存
+		nosql产品特点（mangodb等）
+			1.不使用严格好的表结构，2.数据查询一般都不再使用sql查询
+
+	二.安装redis(redis和php——redis拓展文件)
+		1.window下运行redis	
+			redis目录里分别是 bench压力测试工具  check是日志检查
+			1.管理员启动命令（cmd）,进入目录，运行redis-server.exe
+			2.命令行输入ctrl+c，停止服务
+			3.新开一个窗口命令，同样进入目录，运行 
+			   1）默认链接本地
+			   2）链接其他主机redis-cli.exe -h 主机ip -p 端口号 
+			   3）命令行输入ctrl+c，停止当前连接
+		2.linux
+			1.cp 压缩包名1 压缩包名2 目的路径（/usr/local/src）    //将压缩包复制到 指定目录
+			2. cd /usr/local/src  //进入目录  
+			   tar -zxvf 压缩包名    //解压
+			   cd 目录       //进入源码包文件夹，
+			   make 		//直接make安装
+			   make PREFIX=/usr/local/redis install    //设置安装目录
+			   mkdir /etc/redis      //创建配置文件文件夹
+			   cp redis.conf /etc/redis   //将配置文件复制到新建的文件夹
+
+			3. ./redis-server    //进入redis/bin目录后，执行此命令 启动服务器   关闭ctrl+c
+
+			   daemonize no改成yes   //允许后台运行,修改配置文件 
+
+     		   ./redis-server /etc/redis/redis.conf   //按配置文件启动
+
+			   /usr/local/src/redis/bin/redis-server /etc/redis/redis.conf 绝对路劲按配置文件启动服务器
+
+			   pc axu | grep redis-server  查看服务器是否启动
+
+			4.pkill -9 redis-server    //杀掉服务器进程，即关闭
+			5. cd /usr/local/src/redis/bin/  				//进入有redis-cli.exe目录
+			6. ./redis-cli -h 192.168.1.108 -p 6379   		//不带密码链接   带密码的话后边加上 -a 密码
+			7. 链接时没用密码  使用auth 密码 之后再进行其他操作
+	三.redis数据类型
+		字符串string
+			set key  value   //赋值 
+			get key 		//取值
+			incr key 自增(+1)
+			decr key 自减(-1)
+			incrby key  22  加法 加22
+			decrby key  22  减法 减22
+			keys * 获取redis里的所有key    
+
+		  **mysql存储的表转存到redis方法
+				1.mysql的表名字当redis里面key的前缀（tablename前缀）
+				2.把mysql里的主键放在上面前缀后边，以冒号隔开（tablename：id）
+				3.把mysql里的主键的值做第三部分（tablename：id：1）
+				4.把mysql里的其他字段当做key的第四部分
+				（tablename：id：1：name zhang，tablename：id：1：email zhanbka.com）
+				5.把mysql里的对应字段的值当 key的value值(zhang,11213)
+
+		hash类型
+			hset user name zhang    //value有两部分，相当于索引数组name zhang
+			hget user name          //获取值
+			hmset user name zhang age 12 。。。   //设置多个值
+			hgetall user			//获取所有值
+
+		list 链表类型
+		    分为 头(左边) 身 尾(右边) 
+		    lpush link1(链表名) value1(链表里的值)
+		    lpush link1(链表名) value2(链表里的值)      左侧加入，后进的在左边
+		    rpush link2   value1
+		    rpush  link2  value2    右侧加入，后进的在右边
+		    lrange link1  0 -1      获取链表的数据 ，0是第一个， -1是到最后一个
+		    lpop  link1             从链表的左侧弹出最近的一个数据
+		    rpop  link              从链表的右侧最后一个弹出数据
+
+		  **链表数据的应用
+			mysql存取的最近登录的十个用户
+				1.lpush  从左侧将用户的id存入
+				2.rpop   超过十个将最右边的弹出
+		set类型 （无序集合）
+			sadd  key(集合名)  value(元素值)       //添加集合元素
+			smembers  key              //获取集合里的元素
+			spop   key   			//随机弹出一个元素   
+			srem key  value      //移除集合中的某个元素       
+			sinter key1 key2		//交集   共同好友
+			sunion key1 key2		//并集	全部好友
+			sdiff  key1 key2	   	//差集  推荐好友   前有后没有的		
+
+			**应用于社交类型的网站的好友关系展示
+					列如：推荐好友，共同好友等等
+			案例：
+				a.设计四个用户(key的实际参考一般key的设计思路)
+				b.设计四个用户的好友集合 中间以：隔开，和上边的mysql改写一样
+					sadd set：user：id：3：friend 1
+							。。。 				 2
+				c.求好友关系集合
+					sinter 交集   共同好友
+					sunion 并集	全部好友
+					sdiff 差集   推荐好友   前有后没有的
+		zset类型 (有序集合)
+			有序集合中每个元素都有一个权重，列如1-9火a-z 
+			zadd key 权重  value    //添加集合元素      zadd  jihe1  1  aaa
+			zrange  key  0 -1            //获取元素 
+			zrange  key  0 -1  withscores          //获取元素 并显示权重 
+	
+	四.php操作redis
+		1.windows平台
+			1.需要redis的php拓展包php_redis.dll 
+			2.复制文件到wamp下php的ext文件夹下
+			3.修改配置文件 extension=php_redis扩展配置开启(不同版本需要的设置也不同)
+			4.重启apace，测试PHPinfo(),显示redis成功
+			5.使用，先声明对象 $redis =new Redis(); 
+			6.设置主机和端口，链接，$redis->connect("host","port");
+ 		2.linux
+
+
+ 	五.安全机制
+ 		默认是不需要密码的，加密码需要更改redis配置文件
+ 		linux下
+ 			配置文件 vim /etc/redis/redis.conf    找到requirepass 去掉前边注释，后面加密码
+
+ 			设置值前需要 auth 密码
+ 			6. ./redis-cli -h 192.168.1.108 -p 6379   		//不带密码链接   带密码的话后边加上 -a 密码
+			7. 链接时没用密码  使用auth 密码 之后再进行其他操作
+	六.redis的持久化功能
+		1.介绍
+			redis为了本身的数据安全和完整性，会把内存中的数据按一定方式同步到电脑的磁盘上，这个过程称为持久化，下次启动时，会把磁盘保存的数据重新加载到内存里面。
+			常见的两种方式
+			a.基于快照的方式：redis会按照一定的周期把内存里的数据同步到磁盘文件 里面
+			b.基于日志文件的追加：redis会把对redis数据造成的更该命令记录到日志文件中，然后重启一次的时候，执行日志里面对redis写的操作，达到数据的还原
+		2.基于快照的持久化
+			1.修改配置文件
+				找save 900 1    900s内对redis的key进行一次操作，则会把内存里的同步到磁盘文件
+				 save  300 10   300s
+				 save  60  10000   60s  
+			2.设置存储文件（保存到磁盘哪里）
+				找到配置文件  dbfilename   dump.rgb    基于快照持久化保存的文件的名称
+							 dir ./					保存的目录，默认是相对于启动文件redis-server的位置
+							 bgsave   手工触发快照（手动保存）
+							 pkill -9 redis-server  手工模拟服务器宕机（像断电)
+							 之后查看文件看数据是否存在
+		3.日志追加模式
+			1.修改配置文件
+				    appendonly  no 改成yes    开启基于文件追加方式的持久化操作
+					appendfilename  "aaa"  文件的名称
+				备份周期
+					appendfsync always    只要存在对redis数据造成的更改操作，都记录到磁盘文件上
+					appendfsync everysec   每一秒进行一次把对redis数据造成的更改操作，都记录到磁盘文件上
+					appendfsync no         完全交给操作系统来完成，意思是操作系统不繁忙是会把对redis数据造成的更改操作，都记录到磁盘文件上，这种操作最不可靠
+			2.
+			

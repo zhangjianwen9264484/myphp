@@ -1,0 +1,84 @@
+例一，Apaceh配置localhost虚拟主机步骤
+1，用记事本打开apache目录下httpd文件(如：D:\wamp\bin\apache\apache2.2.8\conf)，找到如下模块
+# Virtual hosts //可以不改
+#Include conf/extra/httpd-vhosts.conf
+去掉前面的#，这样就开启了httpd-vhosts虚拟主机文件。这时候重启wamp环境，无法打开localhost，需要在httpd-vhosts.conf配置一下。
+
+
+2，用记事本打开httpd-vhosts文件，配置好localhost虚拟主机，参照httpd-vhosts文件中实例，修改成如下：
+<VirtualHost *:80>
+ServerAdmin webmaster@dummy-host.localhost
+DocumentRoot "D:\wamp\www"
+ServerName localhost
+ServerAlias localhost
+ErrorLog "logs/dummy-host.localhost-error.log"
+CustomLog "logs/dummy-host.localhost-access.log" common
+</VirtualHost>
+修改配置如下：
+DocumentRoot 修改为本地wamp环境下的www目录(如：D:\wamp\www)
+ServerName改为localhost
+
+
+
+3，重启Apache，发现localhost可以正常打开，配置localhost比较简单。
+实例二，Apaceh配置test.biuuu.com虚拟主机步骤
+1，方法同上，复制配置代码修改如下：
+
+<VirtualHost *:80>
+ServerAdmin test@biuuu.com
+DocumentRoot E:\WebRoot\biuuu
+ServerName test.biuuu.com
+ErrorLog "logs/dummy-host2.localhost-error.log"
+CustomLog "logs/dummy-host2.localhost-access.log" common
+</VirtualHost>
+
+
+2，打开host文件(C:\WINDOWS\system32\drivers\etc\hosts)，增加一行代码
+127.0.0.1       test.biuuu.com
+3，在浏览器中打开test.biuuu.com，发现如下错误403 Forbidden错误
+Forbidden
+You don't have permission to access / on this server.
+分析：这主要是目录访问权限没有设置，需要设置对目录的访问权！
+
+
+4，打开httpd文件，找到如下语句
+<Directory />
+Options FollowSymLinks
+AllowOverride None
+Order deny,allow
+Deny from all
+</Directory>
+复制以上代码，并进行目录修改，把/替换为E:\WebRoot\biuuu，修改virtualHost代码如下
+<VirtualHost *:80>
+ServerAdmin test@biuuu.com
+DocumentRoot E:\WebRoot\biuuu
+ServerName test.biuuu.com
+ErrorLog "logs/dummy-host2.localhost-error.log"
+CustomLog "logs/dummy-host2.localhost-access.log" common
+<Directory E:\WebRoot\biuuu>
+Options FollowSymLinks
+AllowOverride None
+Order deny,allow  
+Deny from all
+</Directory>
+</VirtualHost>
+在浏览器中测试发现还是打不开，提示如上403 Forbidden错误，修改其中的Deny from all为allow from all
+<Directory "F:/phpdemo/wlgl/">
+    AllowOverride none
+    Require all granted
+</Directory>
+5，重启Apache，虚拟主机配置成功！
+注意事项
+1，目录路径，如E:\WebRoot\biuuu
+2，访问权限，如上Deny from all修改为allow from all
+3，host文件，配置虚拟域名host指向
+4，httpd文件，打开Include conf/extra/httpd-vhosts.conf模块
+5，httpd-vhosts文件，配置虚拟主机
+使用Apaceh配置httpd-vhosts虚拟主机对于开发人员来说比较简单，但却非常重要，仅供参考！
+参考资料：
+http://httpd.apache.org/docs/2.2/vhosts/
+http://httpd.apache.org/docs/2.0/vhosts/examples.html
+原创文章如转载，请注明：转载自 必优博客 http://www.biuuu.com/
+顾银鑫 注：如发生Fatal error: Allowed memory size of 8388608 bytes exhausted错误
+修改php.ini设置memory_limit = 12M（默认8M）
+或只需要在你的程序头部加入： ini_set("memory_limit","12M");

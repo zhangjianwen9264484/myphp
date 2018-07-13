@@ -1,0 +1,345 @@
+学习内容：1、w3c的重点是基础课程里的超全局,PHP表单,PHP高级编程里的SESSION COOKIE REQUEST（调试神器var_dump
+	它就像js,jq调试错误时的alert一样好用,后两个w3c里没有详细介绍你们就百度php request用这种格式百度php函数）
+	2、练习表单验证就是留言板（看看有什么小功能写一写）
+	3、Mysql数据库
+	4、thinkphp开发框架
+	5、linux操作系统
+
+ 
+
+1、php作用域
+	1、local（局部）{函数内部}
+	2、global（全局）{函数外部} 函数中使用全局变量，必须在函数内用global关键字来定义目标变量。global 变量名
+		或用数组  $GLOBALS['two'] = $GLOBALS['one '] +$GLOBALS['two']
+	3、static（静态）函数完成/执行后，会删除所有变量。不过，有时我需要不删除某个局部变量。
+			首次声明变量时使用 static 关键词：        
+		静态变量从自己的内存中提取前次的存储数据，并且以此值进行计算。
+			如（function myTest() {static $x=0;echo $x$x++;}）
+2、echo	与print：{
+	echo：能输出一个以上的字符；（快）（ echo和echo（）都可以使用）
+	print：只输出一个字符；并是始终返回1；
+}
+3、调试神器      var_dump() 会返回变量的数据类型和值：
+4.trpos() 函数用于检索字符串内指定的字符或文本。
+	如果找到匹配，则会返回首个匹配的字符位置。如果未找到匹配，则将返回 FALSE。
+5、有效的常量名以字符或下划线开头（常量名称前面没有 $ 符号）
+	设置常量，请使用 define() 函数 - 它使用三个参数：
+	首个参数定义常量的名称
+	第二个参数定义常量的值
+	可选的第三个参数规定常量名是否对大小写敏感。默认是 false。
+6.php字符串运算符
+. 串接 $txt1 = "Hello" $txt2 = $txt1 . " world!"    现在 $txt2 包含 "Hello world!"
+.=串接赋值     $txt1 = "Hello" $txt1 .= " world!"    现在 $txt1 包含 "Hello world!"
+
+7、php比较运算符   <>不等于  ！== 不全等（完全不同）
+8.逻辑运算符
+and 与    or 或	  xor 异或    
+
+9.数组运算符
+	+	联合	$x + $y	$x 和 $y 的联合（但不覆盖重复的键）
+
+10、foreach 循环只适用于数组，并用于遍历数组中的每个键/值对。当前数组元素的值就会被赋值给 $value 变量，
+	并且数组指针会逐一地移动，直到到达最后一个数组元素。
+<?php 
+$colors = array("red","green","blue","yellow"); 
+
+foreach ($colors as $value) {
+  echo "$value <br>";
+}
+?>
+
+11、数组{
+遍历索引数组    
+<?php
+$cars=array("Volvo","BMW","SAAB");
+$arrlength=count($cars);
+
+for($x=0;$x<$arrlength;$x++) {
+  echo $cars[$x];
+  echo "<br>";
+}
+?>
+PHP 关联数组
+$age=array("Peter"=>"35","Ben"=>"37","Joe"=>"43");
+或者：
+$age['Peter']="35";
+$age['Ben']="37";
+$age['Joe']="43";
+<?php
+$age=array("Bill"=>"35","Steve"=>"37","Peter"=>"43");
+echo "Peter is " . $age['Peter'] . " years old.";
+?>
+
+数组遍历：
+	1.mysql_fetct_row()函数 从结果集中的一行作为枚举数组返回。
+	2.each()函数 需要传递一个数组作为参数，返回数组中当前的元素的键/值,并向后移动数组指针到下一个元素。
+	3.list（）函数 把数组中的值付给一些变量。仅能用于数组索引并假定从0开始。 
+		list（变量1，变量2，变量。。）= 数组名
+	4.in_array()或array_search：检查数组是否存在某个值，in_array(‘变量名’，变量存在的数组名，true或flase或无)
+	5.array_keys_exists（）检查键名或索引，返回flase或true。
+	6.array_flip（）：交换数组键和值；array_flip(“数组名”)；如果出现重复的，取最后一次的值；
+	7.array_reverse（）：将原数组的元素顺序翻转。
+	8.count（）和sizeof（）：对数组元素个数进行统计。array_count_values（）统计所有制出现的次数。
+	9.array_unique（）：删除数组中重复的值并返回没有重复的新数组。
+	10.array_filter（）：用回调函数过滤数组中的元素，array_filter(“数组名”，“上边定义的函数名”）
+	11.array_walk()：对数组中的每个元素应用回调函数处理，
+	  array_filter('数组名','上边定义的函数名'）或者array_filter('数组名','上边定义的函数名','自己定义的字符串(形参),)
+	12.array_map():可以处理多个数组，将回调函数作用到给定数组的元素上，返回用户自定义函数作用后的数组
+		array_push(名，值)向数组尾部插入元素    array_pop()弹出数组尾部元素
+		array_unshift（$arr,'z') 向头部插入元素      array_shift（）弹出头部	
+	
+        
+拆分、合并、分解、和结合数组
+	1.array_slice()在数组中根据条件取出一段值并返回，array_slice('数组名'， '参数一'， '参数二')：参数一为在数组中的位置，
+	  为正值时从前向后，负值从后向前，参数二为输出个数。
+	2.array_splice（）：选择数组中的元素，删除它们并用其他值代替，array_splice(“数组名”，参数有三个）
+	  参数一offset值为正，从该值位置向后移除，为负值，从后向前，参数二length为正，移除length数量的元素，为负值，移除从offset到末尾length为止中间所有元素。
+      	  参数四被移除的元素由此数组的元素代替，如果没有移除，则此数组的元素将插入数组直接定位置，
+	3.array_combine（）：合并两个数组，一个数组为键名，一个数组为键值。其中一个为空或两个数组元素个数不一样，返回flase；	
+	4.array_merge()将一个或多个数组合成一个数组如果键名重复，该键值为最后一键名对应的值，如果是索引数组，会已连续方式重新索引。
+	5.array_intersect()：计算数组的交集。键名保留不变。array_intersect( 1,2,）
+	6.array_diff()：返回两个数组的差集数组（返回第一个与第二个不同的元素），键名不变
+
+
+12、PHP - 数组的排序函数
+sort() - 以升序对数组排序
+rsort() - 以降序对数组排序
+asort() - 根据值，以升序对关联数组进行排序
+ksort() - 根据键，以升序对关联数组进行排序
+arsort() - 根据值，以降序对关联数组进行排序
+krsort() - 根据键，以降序对关联数组进行排序
+natsort()-自然排序，1--9.a-z。。
+array_multisort()：多维数组排序。
+}
+
+
+13、PHP 全局变量 - 超全局变量{
+	$_SERVER: 变量有web服务器设定或者直接与当前脚本的执行环境有关。
+	$_ENV:执行环境提交至脚本的变量；
+	$_GET:经由url请求提交至脚本变量
+	$_POST:经由http post 方法提交至脚本变量；
+	$_REQUEST:经由 get post cookie机制提交只脚本变量，因此数组并不值得信任。
+	$_FILES:经由http post文件上传而提交至脚本变量；必须使用post 提交。$_FILES是二维数组，5个子数组元素，
+		第一个为域名称，第二个下标为文件属性。
+	$_COOKIE:经由 cookie方法提交至脚本变量
+	$_SESSION:当前 注册给脚本的会话的变量
+	$GLOBALES:包含一个引用指向每个当前脚本的全局范围内有效的变量，该数组的键名为全局变量的名称；
+		注：函数内不需要使用global关键字，直接使用$GLOBALES['..']
+	
+}
+14.函数
+	1.可变个数参数的函数： function funname（string1,string ...）需要在函数中使用php函数func_get_args().
+		他将所有传递给脚本函数的参数当做数组返回。func_num_args()返回参数的总数，使用func_get_arg()函数接受一个参数
+		返回指定的参数。
+
+	2.回调函数：  1，变量函数;  也称可变函数，一个变量名后加括号，php将寻找与变量的值同名的函数，并尝试打开。
+			变量名=函数名； 变量名（参数）=执行上边函数
+		      2，使用变量函数声明和应用和回调函数 见程序。 或者借助call_user_func_array()php内置函数（回调函数）
+		用法：call_user_func_array("函数名"，array（”函数的形参1“，“形参2”。。。。）)
+		3，类静态函数和对象方法回调：	
+		  回调静态函数 ： call_user_func_array( arry( 类名, 类中函数名) ，array（类中函数的参数）)；
+		  回调对象 ： call_user_func_array( arry( 对象名, 对象中函方法名) ，array（对象中方法的参数）
+
+15。对象成员的访问：
+	1.$变量名 = new 类名称（{形参}）；	$p =new person();           $p->name="zhang";echo '$p->name' 结果：zhang；
+	2.$this 特殊的对象引用$this;  就是对“本对象”的引用，只能在对象成员方法中使用，（对自己内部的成员访问）$this->name；
+	3.构造函数：function _construct(参数列表){对成员赋值};必须为下划线，php5以前构造方法地方法名和类名一致，但php5以后，少用，独立于类名，
+ 	4.析构函数：function _destruct(参数列表){ 对成员赋值}
+	5.封装：设置私有成员：private	。
+	6.在外部对私有成员访问，public function 自定义函数名，（）{return $this->成员 };
+	7.四个方法(都为公有函数)：使用这些方法，方法内的内容用户自己按需求（名前是两个下划线）
+		__set(): 对私有属性值赋值   __set(名，值)；
+		__get(): 获取私有属性值 __get(名)；
+		__isset():检测类中私有成员 isset()检测公有成员，私有不行，__isset(名)；
+		__unset():删除私有成员 unset()删除公有，私有不行，__unset（名）
+
+16.继承行
+	1.公有继承关键字extends ；
+	2.protected保护成员可以被子类调用。自己类中不能调用
+	3.继承父类的函数在子类中被重载，重新付给功能，父类的功能被覆盖，
+	4.使用关键字 parents::函数名 可以使用从父类中继承过来的方法，还可以添加新功能，见代码parent
+	5.关键字final:不能作为成员,1.使用final标识的类不能被继承,2.标记的成员方法,在子类不能被覆盖.
+	6.关键static:静态标志,可以标记方法和成员,标记的成员是唯一的,  使用类名来直接访问,
+		static::静态成员属性名   static::静态成员方法名();在类的外部和成员方法中都可以使用这种方法访问静态成员属性或方法;
+		在类中,可以使用关键"self"访问其他静态成员,因为属于类,不属于对象,多以不能$this, self::静态成员属性或方法名();{在类的成员方法中使用}
+	7.关键字const:通常定义常量用define()函数,在类中只能用const;通过类名或self访问,不能重新赋值.  常量名前不用$,而且名通常大写;
+	8.instanceof:可以确定一个对象  是类的实例.类的子类.实现了某个特定的接口; 脚本执行失败则退出,可以同时处理多个对象,重复调用函数时,根据对象类型调整函数行为
+		例如:判断$man是否是类person的实例:$man = new Person();  if($man instanceof person) echo"$man是person的实例对象"
+	9.clone克隆对象:两个完全一样;
+	10._clone():在对象克隆时自动调用,无参数,函数中$this对副本对象的引用,原对象继承过来,也可以对原本对象的引用,
+	11.__toString():快速获取对象字符串， 直接输出对象引用时自动调用，
+	12.__call():调用对象中不存在的方法自动调用该函数，__call("函数名"，参数)，函数名字符串输出，参数数组输出
+	13。__serialize();对象转为二进制字符串，__unserialize() 字符串转为对象。
+	14.抽象类：abstract修饰，抽象方法继承后直接改写功能
+	15interface ：接口声明；接口间可继承，  多接口implememts 借口一，接口二 
+
+17.字符串操作
+	字符串中的转义：
+	在单引号中：只认识2个转义，\' => ' \\ ==> \
+	而在双引号中，认识更多一些，如 \" ,\n(换行), \t(tag制表符 )..等等，去手册查询；
+
+	1.输出函数:
+		echo()  print(输出一个或多个字符串)  die()输出一条消息,并退出当前脚本
+		printf(format,arg1,arg2...) 输出格式化字符串    sprintf(把格式化的字符串写入一个变量中)
+	2.去除空格和字符串填补函数
+		 ltrim(string str[,string charlist])		//从左边开始删除 str为待处理字符串,charlist为过滤字符串
+		 rtrim(string str[,string charlist])		//右边
+		 trim(string str[,string charlist] )	//两端
+	3.string str_pad(string input,int pad_length[,string pad_string[,int pad_type]]) pad_type包括str_pad_both两端str_pad_left/right
+	4.字符串大小写转换:
+		strtoupper()大写,strtolower()小写 ucfirst()字符串第一个字母大写ucwords()全部以空格隔开,首字母大写
+	5.和html有关的:	
+		1.nl2br()将"\n"转换成<br>
+		2.htmlspecialchars()将html中的标记的特殊字符转换成html实体.多用于布告栏或是访客留言版
+		3.htmltities()将非asc码转换成实体代码,还可以转义更多的html字符.
+		4.stripslashes()删除反斜线  addslashes()增加
+		5.string strip_tags(string str[,string alowable_tags])alowable_tags是可选参数,被保留下来的的标签
+	6.strrev()将输入的字符串反转
+	7.number_format()格式化数字(电商用) number_format(float number[,nt decimals[,string dec_point,stringthousands_sep]])
+		列如:number_format($number,2,",",".")千位使用.分隔小数点为,号;
+	8.md5()将字符串进行算法加密		
+			md5($password)        md5_file()对文件加密
+	9.按字节顺序进行字符串比较,  
+		strcmp(str1,str2);区分大小写比较   strcasecmp(str1,str2);忽略大小写相等返回0;大于返回1,小于-1
+	10.字符串替换str_replace（被替换的，替换内容，所在变量）
+			 整个变量替换strtr（变量，array（"被替"=》"替换"，可以多个））；
+			 截取字符串substr(变量，n，n)
+		
+	11.截取字符串substr(变量,开始,结束)  substr($str,0,4)  中文可用mb_substr($str,0,4,"utf-8")  多字节的
+	12.查找  strstr()    stristr()  不区分大小写
+		strpos()从前边 首次出现位置    strrpos() 最后一次出现位置
+	13.正则匹配查找 preg_match()   preg_match_all() preg_grep()多个;
+	14.分割 连接 explode（',',$str）按，号拆分     implode（）组合
+	15正则分割   preg_split();、
+
+
+
+
+18.错误处理:  trigger_error()代替die()会更好
+	      set_error_handler( )用户自定义的错误处理函数 见代码
+19.异常处理:try{}catch{} 异常处理类         见代码
+20.时间与日期:  
+	1.mktime(h,m,s,y,m,d)将日期转变为unix时间戳
+	2.strtotime(time)转换时间戳
+	  microtime()微秒数
+	3.日期计算见截图
+	4.getdate()获取日时间   注意mday                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              月份中的日,wday周份中的日 yday年份中的日 weekday一周中日的完整文本表示
+	5.date()格式化    date("Y年m月d日 h:i:s")
+	6.调整默认时间.调整配置文件(见截图);或 
+	 date_default_timezone_set("PRC")prc为中国
+	7.日历类代码date.php
+
+
+21.文件管理
+	1.filesize（）获取文件大小        filetype（）文件类型
+	2.is_dir()是否为目录         is_file（）是否为文件    其他见手册
+	3file_exists()文件是否存在
+	4,php操作的本地的文件，但是文件路径是浏览器上用的
+	5basename（）获取文件名     basename("http//www.php/index.php",".php")去掉后缀名       diename()获取目录名
+	6pathinfo() 返回文件路径信息，以数组方式
+	7遍历目录：见手册Directory函数 opendir()打开目录   closedir() readdir()读取目录中的条目  rewinddir()返回开始目录。。。。。
+	8创建文件：touch（）复制copy（）  rename（）重命名  unlink（）删除
+	9file_get_contents("")获取整体内容   file_put_contents() 增添文件内容（不追加，直接替换） readfile()读文件
+	10打开文件：  fopen（）	r 只读  文件指向文件头 
+				r+ 读写 文件指针指向文件头  
+				w写入  文件指向文件尾，文件大小为零，文件不存在则尝试创建 
+				w+ 读写打开 文件指向文件尾，文件大小为零，文件不存在则尝试创建 
+				a 写入    文件指针指向末尾， 文件不存在就创建  追加
+				a+读写    文件指针指向末尾， 文件不存在就创建
+		     fwrite()往文件里写内容
+		     fgetc()读内容 一次读一个字符,
+		     feof() 文件出错，或到文件结尾 返回真
+		     fread（$wenjian,大小）读内容
+		ftell 返回文件的指针读写位置，默认0 
+		fseek()移动指针位置
+		rewind 倒回文件位置
+
+
+22.动态图片处理 
+23.数据库抽象层pdo
+	1.pdo安装: linux下xonfigure命令里加 --with-pdo-mysql=/user/local/mysql (此为mysql服务器安装目录)
+	2.windows在php.ini文件中extension=php_pdo.dll  extension=php_pdo_mysql.dll  mysql可以为mssql和odbc oci
+
+	3.pdo创建对象,构造函数__construct(dsn,username,password,drivers_options)drivers_options链接所需的额外选项
+	  dsn格式: oci:dbname=//localhost:1521/mydb   链接oracle服务器的dsn,oci:作为驱动前缀 主机localhost 端口1521,数据库mydb
+	   mysql:host=localhost; dbname=testdb     链接mysql服务器的dsn,mysql为驱动前缀,主机localhost 数据库testsb
+	
+4.pdo的几种构造方法和pdo数据库链接的有关选项,还有pdo类中成员方法    见截图
+	
+5.类中成员方法:setAttribute()和getAttribute()设置和获取属性值  截图
+	
+6.$dbh->setAttribute(PDO::ATTR_ORACLE_NULLS,true)  将空字符串转化为null   通过对象打开任何语句的空字符串都被转化
+	
+7.pdo错误处理模式:1.PDO::ERRMODE_SILENT 默认模式,不进行任何操作 通过errorCode()和errorInfo()进行检查
+		2.PDO::ERRMODE_WARNING  警告模式, 发出警告处理错误      $dbh->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_WARNING);
+		3.PDO::ERRMODE_EXCEPTION 异常模式   抛出异常他会放大错误,更快找到问题 $dbh->setAttribute(PDO::ATTR_ERRMODE,PDO::ERRMODE_EXCEPTION)		
+	
+8.使用PDO	exec（）执行sql语句  插入 删除 替换 不能查询
+		 PDO::query()方法   返回结果集 select 查询    成功返回一个PDOstatement对象,可以用对象中的rowCount()获取行
+	
+9.使用PDO::prepare()和PDOStatement::execute() :当一个查询需要多次执行,可以使用预处理   prepare()准备一个将要执行查询,使用execute()来执行
+	
+10.准备语句: 每次执行时都要改变一些值，使用占位符
+		使用命名参数(:开始)作为占位符：$dbh->prepare("INSERT INTO contactInfo(name,address,phone)VALUES(:name,:address,:phone)");
+		使用？参数作为占位符: $dbh->prepare("INSERT INTO contactInfo(name,address,phone)VALUES(?,?,?)");
+	
+11.绑定参数:使用PDOStatement对象中的bindParam()方法 h  命名参数bindParam(n,$n)  ?参数bindparam(1,$name,PDO::PARAM_STR) 
+				可以通过数组替代bindParam()  $stmt->execute(array(":name"=>"孙..",":address"=>"海淀区",......))
+				?的			$stmt->execute(array("孙..","海淀区",".."))
+	
+12.lastInsertId()方法获取最后插入数据表中的记录id
+	
+13获取数据: fetch()截图
+		    fetchAll()处理特别大的结果集时,会给数据库服务器资源和网络带宽带来很大负担.
+		    setFetchMode()在页面顶部设置一次模式,之后fetch()和fetchAll()调用生成对应结果集减少多次调用fetch()时的参数录入
+		    bindColumn()该方法可以讲一个列和一个变量名绑定,fetch()方法的第一个参数必须为PDO::FETCH_BOTH
+			bindColumn(列偏移量或列名,变量名) 列偏移量为整数 1 2 ..
+		    columnCount()获取数据表中的字段数量     getColumnMeta()获取具体的属性信息
+	
+14.大数据对象存取:文本数据 二进制图片 电影 (上传图像)  见截图
+	
+
+
+15.mysql的事务处理 mysql的表类型有InnoDB和BDB 前者更快速,有丰富特性
+		创建InnoDB类型表 CREATE TABLE biaoming(...) TYPE=InnoDB  //使用type指定表为InnoDB类型
+		mysql>SET AUTOCOMMIT = 0;  //在当前的会话中关闭自动提交
+		mysql>START TRANSACTION    //开始一个事物   (自动提交开启式使用此语句,关闭时不用)
+		mysql>COMMIT              // 提交一个事务给数据库
+		mysql>ROOLBACK        	 //事务将被回滚,所有操作被取消
+	不是每种数据库都支持事务,支持的在第一打开链接时,在自动模式下运行,如果需要一个事物,得用beginTransaction()开启事务,commit()和rollback()结束
+	
+
+	mysql_affected_rows()判断行数是否变化
+	mysql_insert_id();获取最后的行数
+	mysql_fetch_assoc返回
+
+16.缓存cookie: 
+	没有设置时间，会随浏览器关闭删除
+	不可以跨域名
+	很容易被篡改，常用于记住用户名，浏览历史,安全性不高的地方	
+	setcookie($name ,$value ,$time,'/')在客户端计算机中设置COOkie （名，值，时间，路劲）
+	
+	setcookie("username","skygao","time()+60*60*24*7")向用户发送一个cookie,将变量username值为skygao,保存时间一周
+	多维数组:setcookie("user[username]","skygao");			//设置为$_COOKIE["user"]["username"]
+		setcookie("user[password]","MD5('123456')")		//设置为$_COOKIE["user"]["password"]
+		setcookie("user[email]","dsafdfsadfsa.com")		//设置为$_COOKIE["user"]["email"]  
+	删除cookie: 1.省略所有参数,只保留第一参数,setCookie("account");
+	·	2.使用时间,设置过期     setCookie("isLogin","time()-1");
+    
+  **17.session会话:在使用前先调用 session_start();   sessin_start(void)    //创建session,开始会话,进行初始化
+	
+18.注册会话变量:$_SESSION[]       
+	$_SESSION['username']  //用户   $_SESSION['uid']    //id  变量会保存在文件中,形式:变量名|类型:长度:值
+	
+19	session_destroy()  结束当前会话 销毁和当前会话有关的0[所有资料,包括服务器上Sessionion文件  但是不能释放变量
+	unset($_SESSION["username"])   //删除(释放)在SESSION中注册的变量  注意只能释放单个变量  
+	
+	不可使用unset($_SESSION)删除数组,这样将不能再注册变量,
+	$_SESSION=array();   将变量全部清除,清空数组同时将服务器上session文件内容清除
+	session_unset（）删除所有
+
+	
+20.自定义session存储机制:session_set_save_handler() 回调函数见截图 注:函数必须在php.ini中设置session.save_handler选项的值为user是可用
+	
+21.使用数据库处理Session信息 p563
+session数组不可以和变量比较，不一样

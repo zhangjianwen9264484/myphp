@@ -1,0 +1,65 @@
+tp3.2.3
+	外部项目目录结构和tp5基本一致，只有view和tp3.1一样(在分组目录下view下和控制器同名的文件)
+
+	控制器
+		namespace   Home\Controller;	也要命名空间
+		use Think\Controller  需要引入父类
+		class Usercontroller extends Controller{}
+	跳转	依然用U（）方法
+	成功提示	this->success("",U(),1)  1是时间
+	视图显示
+	1.display中没有参数
+			*  $this->display();
+		2.可以带参数
+			$this->display(本模块文件夹下的其他模板文件);
+			*  $this->display('index2');
+
+			$this->display(其他文件夹下的模板文件);
+			$this->display('Public:error');//注意，仅仅需要在Tpl下有Public文件夹以及其中的error.html即可，不需要一定有Public模块
+
+			$this->display(其他主题下的 文件夹下的 模板文件);//需要开启主题支持
+			$this->display('my:Index:index');
+
+			$this->display(一个url路径);
+			*  $this->display('./Public/error.html');
+
+			$this->display('./Public/error.html','utf-8','text/xml');
+
+			$this->show($content);
+	模板替换变量
+		__MODULE__：会替换成当前分组的URL地址 （不含域名）
+		__CONTROLLER__：会替换成当前控制器的URL地址 （不含域名）
+		__ACTION__ 会被替换成 当前方法的URL地址
+		__PUBLIC__：会被替换成当前网站的公共目录 通常是 /Public
+		__SELF__： 会替换成当前的页面URL
+		//具体的可以试，也可以去取矿建文件中的ContentRepalceBehavior去查看
+		__ROOT__： 会替换成当前网站的地址（不含域名） 
+		__APP__： 会替换成当前项目的URL地址 （不含域名）
+		__URL__： 会替换成当前模块的URL地址（不含域名）
+	
+	变量输出，系统变量和3.1.3一样
+
+	模板包含
+		<include file=“”>
+		传递参数
+		<include file=""   变量名='变量值'>   在引入文件中使用 [变量名]
+
+	循环遍历
+		volist name=  id=	除了name，id，还支持更多的属性对 mod，key，length等
+		foreach name= item=	只支持key属性对
+	禁用原生代码php标签
+		在配置文件 TMPL_DENY_PHP
+ 	数据库操作
+		查询 	select为二维数组，find为一维数组
+			
+			$m->select()  //查询所有数据
+			$m->select(id)  //查询指定id数据	
+			$m->select(id1，id2,id3)  //查询指定id集合的数据等价于in操作
+		
+			$m->find($id)	//查询单条数据
+
+		删除
+			delete(id)	删除单个
+			delete(id1,id2)   删除多个
+		删除物理删除(真删除)，逻辑删除(假删除)修改一个数据（比如状态值）
+			

@@ -1,0 +1,617 @@
+一、ThinkPHP的介绍            //了解
+	MVC
+		M - Model 模型                工作：负责数据的操作
+		V - View  视图（模板）        工作：负责前台页面显示
+		C - Controller 控制器（模块） 工作：描述功能
+
+		M -Model 编写model类 对数据进行操作
+		V -View  编写html文件，页面呈现
+		C -Controller 编写类文件（UserAction.class.php）
+
+		M 项目目录/应用目录/Lib/Model
+		V 项目目录/应用目录/Tpl
+		C 项目目录/应用目录/Lib/Action
+
+		tpl里的文件夹名和Action中模块名一样
+		tplxia文件夹里的html文件要和Action里模块里的方法名一样（ function 名）
+	
+二、ThinkPHP的获取            //了解
+	http://www.thinkphp.cn
+三、ThinkPHP核心文件介绍      //了解
+	├─ThinkPHP.php     框架入口文件
+	├─Common 框架公共文件
+	├─Conf 框架配置文件
+	├─Extend 框架扩展目录
+	├─Lang 核心语言包目录
+	├─Lib 核心类库目录
+	│  ├─Behavior 核心行为类库
+	│  ├─Core 核心基类库
+	│  ├─Driver 内置驱动
+	│  │  ├─Cache 内置缓存驱动
+	│  │  ├─Db 内置数据库驱动
+	│  │  ├─TagLib 内置标签驱动
+	│  │  └─Template 内置模板引擎驱动
+	│  └─Template 内置模板引擎
+	└─Tpl 系统模板目录
+四、实验环境搭建              //了解
+五、项目搭建                  //重点
+	#项目目录结构及说明：
+		Home 前台应用文件夹
+		├─Common 项目公共文件目录
+		├─Conf 项目配置目录
+		├─Lang 项目语言目录
+		├─Lib 项目类库目录
+		│  ├─Action Action类库目录
+		│  ├─Behavior 行为类库目录
+		│  ├─Model 模型类库目录
+		│  └─Widget Widget类库目录
+		├─Runtime 项目运行时目录
+		│  ├─Cache 模板缓存目录
+		│  ├─Data 数据缓存目录
+		│  ├─Logs 日志文件目录
+		│  └─Temp 临时缓存目录
+		└─Tpl 项目模板目录
+
+
+
+'URL_PATHINFO_DEPR'=>'-',//修改URL的分隔符
+
+	     
+五、url的4种访问方式          //重点!
+		1.PATHINFO 模式 -- 重点！！！！！！
+		http://域名/项目名/入口文件/模块名/方法名/键1/值1/键2/值2
+		2.普通模式
+		http://域名/项目名/入口文件?m=模块名&a=方法名&键1=值1&键2=值2
+		3.REWRITE模式
+		http://域名/项目名/模块名/方法名/键1/值1/键2/值2
+		4.兼容模式
+		http://域名/项目名/入口文件？s=模块名/方法名/键1/值1/键2/值2
+
+
+一、ThinkPHP 3 的输出      （重点）
+	a、通过 echo 等PHP原生的输出方式在页面中输出
+	b、通过display方法输出
+		想分配变量可以使用assign方法
+	c、修改左右定界符
+		休要修改配置文件中的配置项
+		'TMPL_L_DELIM'=>'<{', //修改左定界符
+		'TMPL_R_DELIM'=>'}>', //修改右定界符
+
+二、ThinkPHP 3 的模型使用  （重点）
+	需要在方法中通过new Model（表名）的形式操作数据库
+		$m=new Model('User');
+		$arr=$m->select(); 
+	'DB_TYPE'=>'mysql',   //设置数据库类型
+	'DB_HOST'=>'localhost',//设置主机
+	'DB_NAME'=>'thinkphp',//设置数据库名
+	'DB_USER'=>'root',    //设置用户名
+	'DB_PWD'=>'',        //设置密码
+	'DB_PORT'=>'3306',   //设置端口号
+	'DB_PREFIX'=>'tp_',  //设置表前缀
+	'另外一种方式 DB_DSN'=> 'mysql://root:rootlocalhost:3306/zhang'  //优先级更高一些
+
+	还有一种方式
+	 M() 等效为 new Model();
+	$m = M('User')  //要养成大写的习惯
+	$arr =$m ->select()
+
+	使用模型的实例可以对数据进行操作，操作的工作一般就是对数据库进行 增删改查 CURD
+	
+	增 -C Create $m->add()
+	删 -D Delete $m->delete( )
+	改 -U Update $m->save()
+	查 -R Read   $m->select()
+	
+
+a、模板可以遍历数组
+	<volist name='data' id='vo'>
+			<{$vo.id}>----<{$vo.username}>-----<{$vo.sex}><br/>
+		</volist>
+b、我们可以开启调试功能中的page_trace
+	1.开启调试功能
+		//3.开启调试模式
+		define('APP_DEBUG',true);
+		2.我们需要设置配置文件，开启页面trace
+		'SHOW_PAGE_TRACE'=>true,//开启页面Trace
+
+
+
+三、ThinkPHP对数据的操作
+	对数据的读取的read/查询
+		$m = new Model('表名')
+		$m = M('表名')
+		$m->select()  //查询所有数据
+		$m->find($id)	//查询单条数据
+		$m->getField(字段名)  //获取一个字段的值
+		$arr = $m->where('id=2')->getField('表名')   //连接查询
+	对数据的删除
+		$m->delete('条件')
+		$m->where('条件')->delete()
+	对数据的添加
+		$m->字段名 =值
+		$m->add()
+		返回值是新增的id
+********对数据的修改
+		$data['字段']=值；//标识
+		$data['字段名']='值'
+		$m->save（$date）
+		返回值是受影响的行数
+
+数据的查询方式（一般常用）
+		find（）  单个数据   getfield（’字段‘）  select（）查询全部
+		
+	a、字符串
+		$arr =$m->where("sex='0' and username='dede'")->find()
+	b、数组
+		$data["id"]=""
+		$data["字段"]=“值”
+		$m->where($data)->find() //这种方式默认是and  如果用or的话，要
+		
+		$data['sex']="值"
+		$data["字段"]=“值”
+		$_logic="or"
+		$arr=$m->where($data)->select()
+		
+	表达式查询
+		$data["id"]=array('GT',6); 	//满足id 大于6的数据	
+		$arr=$m->where($data)->select()
+		EQ =
+		GT >
+		LT <
+		EGT >=
+		ELT <=
+		LIKE 模糊查询
+			$date["username"] =array（"like","ge%"）  //以ge开头  %ge 以ge结尾
+		NOTLIKE  //不空个
+			$date["username"] =array（"notlike","ge%"）
+			$arr=$m->where($data)->select()
+		如果要匹配多个字符
+			$data['username']=array('like',array('%ge%','%ge','ge%','%zhang'),'and')  //如果没有and 默认是or的关系
+		$arr=$m->where($data)->select()
+	BETWEEN
+		$data['id']=array('between',array(5,7));
+	
+		$data['id']=array('not between',array(5,7)); //not和between中间有空格
+	IN
+		$date["id"]=array('in',array('1,3,5,6'));
+	
+		$date["id"]=array('not in',array('1,3,5,6')); //not和in有空格
+		
+	区间查询
+		$data["id"] = array(array("gt",3 ),array("lt",10)); 默认关系是and
+			
+		$data["id"] = array(array("gt",3 ),array("lt",10),"or");
+		
+		$data["name"] = array(array("like","%2%"),array("like","%五%"),"gege",'or'）;  gege是等于哥哥
+		
+	统计查询
+		count //获取个数
+		max   //获取最大数
+		min   //获取最小数
+		avg   //获取平均数
+		sum   //获取总和
+											
+	SQL直接查询
+		a、query 主要数处理读取数据的
+			成功返回数据的结果集
+			失败返回boolean false
+			$m=M();
+			$result=$m->query("select *  from t_user where id >50");
+			var_dump($result);
+		b、execute 用于更新个写入操作
+			成功返回影响行数
+			失败返回boolean false
+			$m=M();
+			$result=$m->execute("insert into t_user(`username`) values('ztz3')");
+			var_dump($result);
+一、常用连贯操作
+	1.where
+		帮助我们设置查询条件
+	2.order	
+		对结果进行排序
+		$arr=$m->order('id desc')->select();
+		$arr=$m->order(array('id'=>'desc','sex'=>'asc'))->select();
+	3.limit	
+		限制结果
+		limit(2,5)
+		limit('2,5')
+		limit(10)//limit(0,10)
+	4.field	
+		设置查询字段
+		field('username as name,id')
+		field(array('username'=>'name','id')
+		field('id',true) //获取除了id以外的所有字段
+	5.table	
+	6.group	
+	7.having
+二、补充  
+		alias 用于给当前数据表定义别名 字符串 
+		page 用于查询分页（内部会转换成limit） 字符串和数字 
+		join* 用于对查询的join支持 字符串和数组 
+		union* 用于对查询的union支持 字符串、数组和对象 
+		distinct 用于查询的distinct支持 布尔值 
+		lock 用于数据库的锁机制 布尔值 
+		cache 用于查询缓存 支持多个参数（以后在缓存部分再详细描述） 
+		relation 用于关联查询（需要关联模型扩展支持） 字符串 
+		validate 用于数据自动验证 数组 
+		auto 用于数据自动完成 数组 
+		filter 用于数据过滤 字符串 
+		scope* 用于命名范围 字符串、数组 
+
+模板的使用        （重点）
+	a、规则
+		模板文件夹下[TPL]/[分组文件夹/][模板主题文件夹/]和模块名同名的文件夹[Index]/和方法名同名的文件[index].html（.tpl）
+		更换模板文件的后缀名（修改配置文件）
+		'TMPL_TEMPLATE_SUFFIX'=>'.html',//更改模板文件后缀名
+	b、修改模板文件目录层次
+		'TMPL_FILE_DEPR'=>'_',//修改模板文件目录层次
+	c、模板主题
+		'DEFAULT_THEME'=>'your',//设置默认模板主题
+		需要在TPL下面新建一个your文件夹作为模板主题文件夹
+		如何动态修改模板主题？
+		1、在后台准备一个功能，修改config.php文件中的默认模板项
+		2、通过url传递 t=主题 参数可以修改不同的模板
+			'DEFAULT_THEME'=>'your',//设置默认模板主题
+			'TMPL_DETECT_THEME'=>true,//自动侦测模板主题
+			'THEME_LIST'=>'your,my',//支持的模板主题列表
+		
+二、输出模板内容      （重点）
+	a、display
+		1.display中没有参数
+			$this->display();
+		2.可以带参数
+			$this->display(本模块文件夹下的其他模板文件);
+			$this->display('index2');
+
+			$this->display(其他文件夹下的模板文件);
+			$this->display('Public:error');//注意，仅仅需要在Tpl下有Public文件夹以及其中的error.html即可，不需要一定有Public模块
+
+			$this->display(其他主题下的 文件夹下的 模板文件);//需要开启主题支持
+			$this->display('my:Index:index');
+
+			$this->display(一个url路径);
+			$this->display('./Public/error.html');
+
+			$this->display('./Public/error.html','utf-8','text/xml');
+
+			$this->show($content);
+		3.fetch方法
+			获得模板文件中的内容，以字符串形式返回
+			$content=$this->fetch('Public:error');
+		4.show方法
+			不需要模板文件，可以直接输出模板内容
+				$content=$this->fetch('Public:error');
+				dump($content);
+				$content=str_replace('h1','i',$content);
+				$this->show($content);
+三、模板中的赋值      （重点）
+		//$this->assign('name','赵桐正');
+		$this->name='赵桐正2';
+		$this->display();
+四、模板替换          （重点）
+		__PUBLIC__：会被替换成当前网站的公共目录 通常是 /Public/
+		__ROOT__： 会替换成当前网站的地址（不含域名） 
+		__APP__： 会替换成当前项目的URL地址 （不含域名）
+		__GROUP__：会替换成当前分组的URL地址 （不含域名）
+		__URL__： 会替换成当前模块的URL地址（不含域名）
+		__ACTION__：会替换成当前操作（action的）的URL地址 （不含域名）
+		__SELF__： 会替换成当前的页面URL
+		
+		更换模板变量规则，修改配置项
+		'TMPL_PARSE_STRING'=>array(           //添加自己的模板变量规则
+		'__CSS__'=>__ROOT__.'/Public/Css',
+		'__JS__'=>__ROOT__.'/Public/Js',
+	),
+
+
+
+变量输出        （重点）
+		1.标量输出
+		2.数组输出
+				{$name[1]}
+				{$name['k2']}
+				{$name.k1}
+		3.对象输出
+				{$name:k}
+				{$name->k}
+		二、系统变量
+				{$Think.get.id}
+				get，post，server,request,cookie,session,config
+		三、使用函数
+				{$name|strtoupper} 生成的编译后文件是 <?php echo (strtoupper($name)); ?>
+				{$name|date='Y m d H:i:s',###}
+		四、默认值
+				{$name|default='这里是默认值'}
+		五、运算符
+				+ - * / % ++ --
+				{$name++}
+
+一、导入CSS和JS文件       
+	1、css link
+	   js  scr
+		<link rel='stylesheet' type='text/css' href='__PUBLIC__/Css/test.css'/>
+		<script src='__PUBLIC__/Js/test.js'></script>
+	2.import
+		<import type='js' file='Js.test' /> //导入Public文件夹下面的Js目录中的test.js文件，import标签可以省略type属性，默认就是js的
+		<import type='css' file='Css.test' />
+		//可以更改默认文件夹 设置basepath属性
+		<import type='js' file='Js.my' basepath='./Other'/>
+	3.load
+		//方法可以自动检测导入的文件类型
+		<load href='__PUBLIC__/Js/test.js' />
+二、分支结构
+	1、if	
+		<if condition='$sex eq "男"'>
+			男人是泥巴做的
+			<else />
+			女人是水做的
+		</if>
+
+		<if condition='$age lt 18'>
+			未成年
+			<elseif  condition='$age eq 18'/>
+			青春年少
+			<else />
+			成年
+		</if>
+		>  gt
+		<  lt
+		== eq
+		<= elt
+		>= egt
+		!= neq
+		=== heq
+		!== nheq
+
+		<switch name='number'>
+			<case value='1'>一个和尚挑水吃</case>
+			<case value='2'>两个和尚台水吃</case>
+			<case value='3'>三个和尚没水吃</case>
+			<default/> 这里是默认值
+		</switch>
+三、循环结构
+	1.for
+		<table border='1' width='500'>
+			<for start='10' end='00' name='j' step='-2' comparison='gt'>
+				<tr><td>{$j}</td><td>abc</td></tr>
+			</for>
+		</table>
+
+	2.volist
+		<volist name='list' id='v'>
+			{$v.username}<br/>
+		</volist>
+	3.foreach
+		<foreach name='list' item='v' key='k'>
+			{$k}-------{$v}<br/>
+		</foreach>
+四、特殊标签
+	1、比较标签
+			eq或者 equal 等于 
+			neq 或者notequal 不等于 
+			gt 大于 
+			egt 大于等于 
+			lt 小于 
+			elt 小于等于 
+			heq 恒等于 
+			nheq 不恒等于 
+
+	2.范围标签
+		in      
+				<in name='n' value='9,10,11,12'>在这些数字里面<else/>不在这些数字的范围内</in>
+				<notin name='n' value='9,10,11,12'>在这些数字里面<else/>不在这些数字的范围内</in>
+		between
+				<notbetween name='n' value='1,10'>{$n}在1-10之间<else/>{$n}不在1到10之间</between>
+	3.present
+		标签来判断模板变量是否已经赋值，
+		<present name='m'>m有赋值<else/>m没有赋值</present>
+	4.Empty
+		empty标签判断模板变量是否为空，
+		<empty name='n'>n为空赋值<else/>n有值</empty>
+	5.Defined 
+		判断常量是否已经定义
+	6.Define
+		在模板中定义常量
+	7.Assing
+		模板中变量赋值
+				
+		
+五、其他标签使用
+	1、在模板中直接使用PHP代码
+		<php> echo "我是赵桐正" </php>
+	2、建议更改左右定界符
+		在配置文件中改变
+			'TMPL_L_DELIM'=>'<{', //修改左定界符
+			'TMPL_R_DELIM'=>'}>', //修改右定界符
+
+
+
+模版的使用
+
+
+一、模板包含
+		<include file="完整模板文件名" />
+		<include file="./Tpl/default/Public/header.html" />
+		<include file="read"/>
+		<include file="Public:header"/>
+		<include file="blue:User:read"/>
+		<include file="$tplName"/>
+		<include file="header" title="ThinkPHP框架"keywords="开源WEB开发框架"/>
+		在模板中变量用[变量]接受
+		<include file='file1,file2'/>
+二、模板渲染
+	1、自动开启模板渲染 设置配置文件
+			'LAYOUT_ON'=>true,//开启模板渲染
+			准备一个模板渲染页面，在页面中使用{__CONTENT__}接受具体模板页面的内容
+			如果在摸一个具体模板中不希望使用渲染模板，可以在页首添加{__NOCONTENT__}
+	2、不开启自动模板渲染可以在每一个具体页面的页首添加
+		<layout name='layout'/>
+	3.使用技巧
+		在渲染模板文件中也可以使用其他模板文件的内容
+		<include file='Public:header'/>
+		<body>
+			<p>这里是渲染页面！！！</p>
+			{__CONTENT__}
+		</body>
+	</html>
+三、模板的继承(子模版将把父模版对应的块换掉)
+	父模版
+		<block name="top"></block>
+		<block name="body"></block>
+	子模版
+		<extend  name="Public:base">继承父模版
+		<block name="top">内容一</block>
+		<block name="bodt=y">内容二</blcok>	
+
+
+一、空模块和空操作
+	1、空操作
+		function _empty($name){
+			$this->show("$name 不存在 <a href='__APP__/Index/index'>返回首页</a>");
+		}
+	2.空模块
+	class EmptyAction extends Action{
+		function index(){
+			$city=M('City');
+			$arr=$city->select();
+			$this->assign('list',$arr);
+			$name=MODULE_NAME;
+			$this->display("City:$name");
+		} 
+	}
+	调用：在方法里$oi=new EmptyAction；$io->index();
+	
+二、前置操作和后置操作
+	1、前置操作： _before_操作名
+	2、后置操作： _after_操作名
+
+URL
+
+一、URL规则
+	1、默认是区分大小写的 
+	2、如果我们不想区分大小写可以改配置文件
+		'URL_CASE_INSENSITIVE'=>true,//url不区分大小写	
+	3、如果模块名为 UserGroupAction
+		那么url找模块就必要要写成
+		http://localhost/thinkphp4/index.php/user_group/index
+	4、如果'URL_CASE_INSENSITIVE'=>false
+		那么url也可以写为
+		http://localhost/thinkphp4/index.php/UserGroup/index
+二、URL伪静态
+		'URL_HTML_SUFFIX'=>'html|shtml|xml',//限制伪静态的后缀
+三、URL路由
+	1、启动路由
+		要在配置文件中开启路由支持
+		'URL_ROUTER_ON' => TRUE
+	2、使用路由
+		1.规则表达式配置路由
+		'URL_ROUTE_RULES' =>array(		
+			'my'=>'Index/index',//静态地址路由
+			':id/:num'=>'Index/index',//动态地址路由
+			'year/:year/:month/:date'=>'Index/index',//动态和静态混合地址路由
+			'year/:year\d/:month\d/:date\d'=>'Index/index',//动态和静态混合地址路由 
+			加上 \d代表类型只能是数字
+			'my/:id$'=>'Index/index',// 加上$说明地址中只能是 my/1000 后面不能有其他内容了
+		)
+		2.正则表达式配置路由
+			'/^year\/(\d{4})\/(\d{2})\/(\d{2})/'=>'Index/index?year=:1&month=:2&date=:3'
+		3、注意事项：
+			1.越复杂的路由越往前面放
+				'URL_ROUTE_RULES'=>array(
+				'my/:year/:month:/:day'=>'Index/day',
+				'my/:id\d'=>'Index/index',
+				'my/:name'=>'Index/index',
+				)
+			2.可以使用$作为完全匹配的路由规则
+				'URL_ROUTE_RULES'=>array(
+					'my/:id\d$'=>'Index/index',
+					'my/:name$'=>'Index/index',
+					'my/:year/:month:/:day$'=>'Index/day',
+			),
+			3.用正则匹配的方式
+				'URL_ROUTE_RULES'=>array(
+				'/^my\/(\d+)$/'=>'Index/index?id=:1',
+				'/^my\/(\w+)$/'=>'Index/index?name=:1',
+				'/^my\/(\d{4})\/(\d{2})\/(\d{2})$/'=>'Index/day?year=:1&month=:2&day=:3',
+				),
+四、URL重写
+	首先修改httpd.conf配置文件   加载mod_rewirite.so模块
+	AllowOverride None  none 改为ALL 
+	然后把.htaccess文件放到入口文件同级目录下
+五、URL生成
+	使用U方法    见手册控制器
+六、多应用配置技巧
+	前后使用一样的配置文件可以放在主文件夹里  
+	在自己的配置文件里
+		$arr=include './config.php';
+		$arr2=array(
+			'配置项'=>'配置值'，
+		)；
+		return array_merge($arr,$arr2);
+	
+七、使用分组
+	一个应用文件 里边的操作、模版等文件夹里分 home和admin文件夹
+八、页面跳转
+	$this->success('查询成功',U('User/test'));
+	$this->redirect('User/test','',5,'页面正在跳'); 第二个参数必须存在，可以为空
+九、Ajax技巧（jq的）
+	ajax返回的是json格式的     有三个属性 date数据 info提示信息 status状态码
+	$.get方法 $.get(‘__URL/getajax’，‘函数’）
+	方法要在action文件写好  function getajax(){ $this->ajaxReturn('数据date'，'提示信息info'，'状态码 status');}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

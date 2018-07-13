@@ -1,0 +1,106 @@
+﻿创建对象
+		//IE浏览器
+			var xhr = new ActiveXObject("Microsoft.XMLHTTP"); //最原始方式 i7 i8 可以
+			var xhr = new ActiveXObject("Msxml2.XMLHTTP"); //升级
+			var xhr = new ActiveXObject("Msxml2.XMLHTTP.3.0"); //升级
+			// var xhr = new ActiveXObject("Msxml2.XMLHTTP.5.0"); //升级
+			var xhr = new ActiveXObject("Msxml2.XMLHTTP.6.0"); //微软维护的最高的ajax版本
+
+			//主流浏览器 firefox chrom safari opera Ie7以上
+			var xhr = new XMLHttpRequest();
+
+ajax对象的成员
+			属性
+						responseText:以字符串的形式接收服务器端返回的信息
+						readyState:
+								0:刚创建ajax对象
+								1:已调用open方法
+								2:已经调用send方法
+								3:已经返回部分数据
+								4:请求完成，数据返回完整
+
+						onreadystatechange：事件 当ajax的状态发生变化时要出发执行
+								为了获得更多的状态，最好创建好ajax对象后的位置
+								最多可以感知1/2/3/4四种状态
+			方法
+						//创建新的http请求，调用函数 open（‘打开方式’，url连接方式）
+						xhr.open("get","./server.php",true/false);
+			同步异步*****		true和false是同步和异步方式  true开启异步
+
+						//发送请求 send(get null /post -- 给服务器要发送的数据)
+						xhr.send(null) ;  // get方式
+						xhr.send(信息字符串);   //post方式
+	 对特殊信息的处理
+			浏览中通过get传参时，遇到特殊符号 例如 & = 等 会产生歧义。需要编码处理
+					1.php里边可以用函数urlencode()/urldecode()对特殊符号进行编码、反编码处理
+					（url_encode()可以把中文变为浏览器可以识别的信息。编码后的信息为%号后接两个16进制数）
+					2.js中 可以通过encodeURIComponent()
+					编码后浏览器可以正常接收，无需反码
+
+			post遇到特殊符号 例如& = 等会产生歧义。也需要编码处理。中文不需要
+				post提交是以xml形式向服务发送数据，得需要xml协议
+				在open()发送请求后，调用xhr.setRequestHeader("content-type","application/x-www-form-urlencoded")
+   无刷新的分页
+	 			js做一个函数showpage()，向调用分页类显示数据的页面通过ajax发送请求,showpage(url) open('get',url)
+				获得返回的字符串document.getElementById('result').innerHTML = xhr.responseText
+				分页类里要配置pagelist函数 a连接调用就是函数，参数为url&page(分页类的a连接参数可以直接使用)
+				goPage()中的localtion换成js函数
+				还有上一页下一页首页尾页 换成js函数
+
+		缓存
+			动态的php程序文件是不需要缓存的
+				解决缓存方法
+					1.给请求的地址设置随机数【推荐】
+					xhr.open("get","./server.php"+?+Math.random());
+					2.给动态的程序设置header头信息，禁止浏览器对其缓存(三个一起用)
+					header("Cache-Control:no-cache");
+					header("Pragma:no-cache");
+					header("Expires:-1");
+
+json的相关
+			php生成json    调用json_encode(参数)函数 只能调用一次
+			解析用          json_decode($arr,true/false)   默认是false，返回对象，true返回数组
+			参数：
+					关联数组  ->  json对象
+					索引数组  ->  js数组
+					索引关联数组->json对象
+					对象       ->json对象
+			如果直接传递json字符串，json_decode()对单双引号有区别的
+			'{"name":"zhang","age":"23" }'
+
+js中把字符串变成对象
+				var str = "{name:'citty',age:'5'}"
+				//eval(字符串参数)     字符串参数变为表达式运行
+				eval("car str ="+obj)
+阻止浏览器默认动作,在定义的函数里边传一个事件参数
+				function(evt){
+						//其他操作
+						evt.preventDefault();  //事件对象停止
+						//return false   二选一
+				}
+	无刷新上传文件
+收集表单数据（普通表单域）和上传文件域
+			var fm =   document.getElementsByTagName('tagName')[0];
+			fm.onsubmit()
+			var fd = new FormData(fm);
+			send(fd);post传递
+			使用FormData注意
+					不需要设计enctype="multipart/form-data"
+					ajax通过post传递FormData数据不需要设置setRequestHeader()方法
+上传附件设置设置大小限制（php.ini）
+		post_max_size=
+		upload_max_filesize=
+进度条
+		ajax对象中有upload成员属性，其也是一个对象，该对象有onprogress属性
+		该属性是一个事件，每隔0.1秒执行一次；
+		执行的过程中会感知会感知当前文件上传的情况，列如总大小total，已经上传的大小(做上传进度条loaded)，等信息
+		ProgressEvent {isTrusted: true, lengthComputable: true, loaded: 151479, total: 151479, type: "progress"…}
+
+滚动条
+			divnode.scrollTop    //获取滚动条卷起的高度
+			divnode.scrollHeight    //获取滚动条的高度
+			div.scroll = div.scrollHeight - div的高度     //讲滚动条定位到最下方
+天气预报
+			出于安全考虑浏览器禁止ajax做跨域请求，可以使用php代理(本地 PHP文件通过file_get_contents()函数来获取接口数据)
+			ajax访问本地的带数据得php文件，实现跨域请求
+			很多天气预报的接口，可以直接调用

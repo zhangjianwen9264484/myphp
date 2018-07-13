@@ -1,0 +1,196 @@
+bootstrap  笔记	
+		我记载的主要是一些常用的，很多细节的东西可以去官网上查看v3.bootcss.com 
+	一、引入 
+		1.网站上可以下载到本地，
+		2.也可直接使用其准备好的云端资源 
+		3.引入css文件，引入jq文件，引入bootstrap的js文件文件(jq文件一定要放在框架之前)
+		
+	二、以移动设备优先   
+		屏幕和设备屏幕一直，初始比例为1:1，禁止用户缩放
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	三、Css布局和一些类
+			总
+			<div class="container"> </div>  固定宽度1170
+			<div class="container-fluid"> </div>  固定宽度100%
+			<h1 class="page-header"></h1>   36px  
+			h2   30px  h3 24px   h4 18px   h5 14px  h6 12px
+			 .page-header页头 ，相当于给标题加上分割线hr
+			 <small></small>  副标题  小一号
+			 <big></big>    副标题  大一号
+			 strong  加粗  
+			 em 倾斜
+			 del   删除线
+
+	    文本对其方式
+			.text-left  .text-center  .text-right
+	    英文大小写
+			.text-uppercase  大写
+			.text-lowercase  小写
+			.text-capitalize 首字母大写
+		列表
+			.list-unstyle 去掉列表前面的符号和去掉原有格式
+			.list-inline  内容横向排列
+		自定义列表
+			.dl-horizontal  设置变成横向排列
+		表格
+			.table 基类 可以叠加类
+			.table-bordered  边框	
+			.table-hover  鼠标悬停效果，变色
+			.table-striped  斑马线，隔行换色
+			.table-condensed  紧凑一点，padding减半
+			若过设备太小，显示不全需要进度条
+				给表格的父集加上类  .table-responsive
+			状态类  tr或者td使用
+				.active	    默认的
+				.success	成功
+				.info		提示
+				.danger		警告
+				.warning  警告
+		响应式图片
+			.img-responsive   适应大小
+			.img-circle      图片变成椭圆形
+			.img-rounded     图片变圆角矩形
+			.img-thumbnail   图片外加上圆角边框 
+		栅格系统
+			栅格系统一定要放在容器中
+				div.container  div.container-fluid
+			栅格系统，浏览器窗口自动分配    ** 最多12列 ** 超出12换到下一行
+			栅格系统是由行row和列col,通过行和列来布局。
+			<div clas="row">
+				<div class="col-md-1"></div>
+			</div>
+
+			.col-md-1      //最小的宽度，也是其他的基本单位
+			.col-md-2     //占两个1的宽度,两列
+			....		  //数字为几就占几个格的宽度
+			.col-md-12	 //占12列
+
+			.col-xs-    手机端  x < 768px  
+			.col-sx-    平板	    768px < x < 992px
+			.col-md-    小的pc	992px < x < 1200px
+			.col-lg-	大的pc  x < 1200px
+			以上的类名可以共用（几列话就用12除以几）
+				class=“col-md-4 col-xs-6  col-sx-6  col-lg-2”
+
+			offset    偏移(只能向右偏移)
+				col-md-offset-2  中等屏幕向右偏移2个列
+			排序
+				col-md-push-     右移
+				col-md-pull-     左移
+	css还可以这么加样式
+			div[class*="col-"]{}      //给div类名中含有col的加上样式
+
+			辅助样式
+				情景文本颜色  
+					.text-muted(柔和) .text-success  text-primary(初始)text-info  text-warning text-danger
+				背景文本颜色
+					.bg-success  .bg-info   bg-primary  bg-warning bg-danger
+				下拉三角 <span class="caret"></span>
+				快读浮动	.pull-left  pull-right
+				清除浮动 父盒子  .clearfix
+		表单
+			<div class="form-group">
+				<labael for="表单的id名"> </labael>
+				<input type="email" name="" value="" id="和for的一样" class="" disabled >
+			</div>
+			form的修饰
+				.form-inline   表单加是行内显示
+				.form-horizontal 表单加响应式   需要结合栅格系统
+				实现响应式需要给label和 input的父级层 加上栅格系统，输入框不可以使用栅格系统
+
+			.form-group   表单分组 （给输入框的父集加，label和input的为一组）有margin的距离
+			.form-control   圆角边框(输入框加)
+			复选框
+				.checkbox-inline	复选框的label标签加，改变内容和input的样式
+				disabled     复选框表单属性禁止选择，也可放在label的类修饰中文字也禁止选择
+			单选框
+				.radio-inline		单选框的label可以用
+				disabled=“”  单选框禁止选择，文字也复选框一样，都是在label中修饰文字禁止选择
+			输入框组(前边带图标的输入框)
+				<div class="input-group">
+					span这div   class=“input-group-addon”
+				</div>
+			需要带的图标的
+				直接复制图标的对应的类名，类名在网站上组件的最上方
+		按钮
+			.thumbnail  圆角外边框
+			.caption  响应式标题
+
+			.btn   基类
+			.btn-info btn-success  ..  按钮颜色
+			.btn-xs			响应式大小 sx md lg
+		缩略图
+			响应式图片  .img-responsive
+
+		下拉列表
+			.dropdown-menu   给下拉列表中的内容  给ul加样式
+			.dropdown        包含触发的按钮和下拉列表加样式    父元素
+			.dropdown-menu-left   下拉列表左对齐    
+			.dropdown-menu-right   下拉列表又对齐    
+			data-toggle       按钮的触发器 (按钮的属性)
+			实现下拉列表
+			 <div class="dropdown">
+			        <button class="btn btn-default" data-toggle="dropdown">  //data-toggle是触发机制
+			            登录 <span class="caret"></span>  //小三角
+			        </button>
+			        <ul class="dropdown-menu">
+			            <li>1</li>
+			            <li>2</li>
+			            <li class="divider"></li>    分割线
+			            <li>3</li>
+			            <li>4</li>
+			            <li>5</li>
+			        </ul>
+			    </div>
+		标签页(选项卡)  在组件里导航中
+			<ul class="nav nav-tabs">
+			  <li role="presentation" class="active"><a href="#"> Home </a></li>
+			 	 	如果你在使用导航组件实现导航条功能，务必在 <ul> 的最外侧的逻辑父元素上添加 role="navigation" 属性，或者用一个 <nav> 元素包裹整个导航组件。不要将 role 属性添加到 <ul> 上，因为这样可以被辅助设备（残疾人用的）上被识别为一个真正的列表。
+			  <li role="presentation"><a href="#"> Profile </a></li>
+			  <li role="presentation"><a href="#"> Messages </a></li>
+			</ul>
+			.nav 是导航栏的链接基类
+			.nav-tabs    普通式
+			.nav-pills	 胶囊式 默认水平
+			nav-pills nav-stacked  垂直式
+		导航
+			.navbar 导航的基类用于nav     ul加
+			.navbar-default 导航默认的样式    ul加
+			.container    是nav的子元素，导航栏的内容放入其中
+			.navbar-header   导航栏头部样式
+
+			.collapse   折叠导航栏的样式基类  ul外的层
+			.navbar-collapse   折叠导航栏的样式
+
+			.nav 是导航栏的链接基类   ul
+			.navbar-nav 是导航栏的链接样式  ul
+
+			.navbar-left .navbar-right    组件排列，导航链接、按钮或文本对齐
+			.navbar-fixed-top    固定在顶部 需要body 设置padding-top:70px;
+			.navbar-fixed-bottom  固定在底部
+			.navbar-inverse   可以实现反色导航栏，改变颜色
+		分页
+			<nav aria-label="Page navigation">
+			  <ul class="pagination">   //
+			    <li>
+			      <a href="#" aria-label="Previous">	//
+			        <span aria-hidden="true">&laquo;</span>
+			      </a>
+			    </li>
+			    <li><a href="#">1</a></li>
+			    <li><a href="#">2</a></li>
+			    <li><a href="#">3</a></li>
+			    <li><a href="#">4</a></li>
+			    <li><a href="#">5</a></li>
+			    <li>
+			      <a href="#" aria-label="Next">	//
+			        <span aria-hidden="true">&raquo;</span>
+			      </a>
+			    </li>
+			  </ul>
+			</nav>
+			你可以给不能点击的链接添加 .disabled 类、给当前页添加 .active 类。
+
+
+
+

@@ -1,0 +1,167 @@
+﻿   tp5 文件目录
+
+	─application           应用目录
+	│  ├─common             公共模块目录（可以更改）
+	│  ├─module_name        模块目录
+	│  │  ├─config.php      模块配置文件
+	│  │  ├─common.php      模块函数文件
+	│  │  ├─controller      控制器目录
+	│  │  ├─model           模型目录
+	│  │  ├─view            视图目录
+	│  │  └─ ...            更多类库目录
+	│  │
+	│  ├─command.php        命令行工具配置文件
+	│  ├─common.php         公共函数文件
+	│  ├─config.php         公共配置文件
+	│  ├─route.php          路由配置文件
+	│  ├─tags.php           应用行为扩展定义文件
+	│  └─database.php       数据库配置文件
+	│
+	├─public                WEB目录（对外访问目录）
+	│  ├─index.php          入口文件
+	│  ├─router.php         快速测试文件
+	│  └─.htaccess          用于apache的重写
+	│
+	├─thinkphp              框架系统目录
+	│  ├─lang               语言文件目录
+	│  ├─library            框架类库目录
+	│  │  ├─think           Think类库包目录
+	│  │  └─traits          系统Trait目录
+	│  │
+	│  ├─tpl                系统模板目录
+	│  ├─base.php           基础定义文件
+	│  ├─console.php        控制台入口文件
+	│  ├─convention.php     框架惯例配置文件
+	│  ├─helper.php         助手函数文件
+	│  ├─phpunit.xml        phpunit配置文件
+	│  └─start.php          框架入口文件
+	│
+	├─extend                扩展类库目录
+	├─runtime               应用的运行时目录（可写，可定制）
+	├─vendor                第三方类库目录（Composer依赖库）
+	├─build.php             自动生成定义文件（参考）
+	├─composer.json         composer 定义文件
+	├─LICENSE.txt           授权说明文件
+	├─README.md             README 文件
+	├─think                 命令行入口文件
+
+
+命名空间
+	
+		namespace kj1;  jk1的命名空间
+		    声明 kj1的空间的变量、函数
+				define定义的变量不能用
+		namespace kj2;	jk2的命名空间
+		    声明 kj1的空间的变量、函数
+		namespace app\index\controll    多级命名空间     项目名\模块名\方法名
+三种访问方式  
+			1.非限定性的	kj1和kj2中的同名的变量，直接访问echo变量名 或函数名(); 输出它上边的变量或执行函数 
+			
+			2.限定名称	kj1\函数或变量名
+			
+			3.完全限定的访问方式      \kj1\函数名或变量名
+
+use使用
+			use namespace app\index\controller
+			引入空间 只需最后一个名   controller\类名、函数
+			
+跳转链接 {:url('',array())}
+post数组   input('post.')
+
+判断是否是post提交
+			request()->isPost()
+			提交过来的数据  
+				input('表单名')
+
+数据库操作   （要引入数据库操作类  use think\Db）
+			数据表  Db::name('表名')->操作   db('表名') 方便 
+			添加 insert
+			查询  find单个   select 多个
+			更改  upadte
+			删除  delete
+
+前端遍历  {volist name="" id="" }{/volist}
+
+
+验证方式 （验证注册等）
+			独立验证   
+					直接调用validate类    见手册
+			验证器（常用）
+		 			和控制器同级文件夹   新建validate文件夹，里边验证文件和控制同名 验证规则$rule和错误提示$message  验证场景$scene 见手册
+		 			namespace app\admin\validate
+		 			use think\Validate
+		 			调用方式 $validate = \think\Loader::validate('文件名');
+		 					 
+		 			验证场景	$validate->scene('add')->check()  加验证场景验证
+
+模型  
+			model文件夹中 和控制器同名文件   
+			namespace app\admin\model
+			use think\Model
+			class 类名Admin  extends Model
+
+		调用方式 
+				需要调用 use app\admin\model\Admin as AdminModel;   类名重复，其别名
+				$list = AdminModel::paginate(3);
+				$this->assign();
+关联模型
+
+		主表 hasMany('关联模型名','外键名','主键名',['模型别名定义']);
+		
+		从表 $this->belongsTo('cate','cateid');
+
+		 文章表为从表（带有tagid字样的）  cate和tag为主表   
+        主表模型写关联关系 （一对一等hasOne） 从表为属于关系  对应model函数 返回 belongsTo('Cate');
+        //belongsToMany('关联模型名','中间表名','外键名','当前模型关联键名',['模型别名定义']);
+
+		如果你是在模型内部，请不要使用$this->name的方式来获取数据，请使用$this->getAttr('name') 替代。
+
+分页
+	$page = $list->render();
+	$this->assign('page', $page);    也可以直接在模版文件中{$list->render()}
+
+
+session助手函数
+
+		// 赋值（当前作用域）
+			session('name', 'thinkphp');
+		// 赋值think作用域
+			session('name', 'thinkphp', 'think');
+		// 取值（当前作用域）
+			session('name');
+		// 取值think作用域
+			session('name', '', 'think');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
